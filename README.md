@@ -24,7 +24,7 @@ gh repo list | Select-String FileCleaner
 # CD
 cd D:\Github\Projects
 # フォルダが存在する場合は削除
-if (-Not (Test-Path -Path .\FileCleaner)){rmdir .\FileCleaner}
+if (Test-Path -Path .\FileCleaner){rm -Recurse -Force .\FileCleaner}
 # クローン実行
 git clone https://github.com/hide104y/FileCleaner.git
 ```
@@ -156,7 +156,7 @@ dotnet publish .\FileCleaner\FileCleaner\FileCleaner.csproj -c Release -o D:\Git
 # CD
 cd D:\Github\Projects
 # フォルダが存在する場合は削除
-if (-Not (Test-Path -Path .\FileCleaner)){rmdir .\FileCleaner}
+if (Test-Path -Path .\FileCleaner){rm -Recurse -Force .\FileCleaner}
 # クローン実行
 git clone -b dotnet10 https://github.com/hide104y/FileCleaner.git
 ```
