@@ -1,0 +1,135 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <url>http://maven.apache.org</url>
+
+  <!-- package -->
+  <groupId>tool</groupId>
+
+  <!-- アプリ名 -->
+  <artifactId>FileCleaner</artifactId>
+  <name>FileCleaner</name>
+
+  <!-- バージョン -->
+  <version>1.0</version>
+
+  <!-- パッケージファイル形式 -->
+  <packaging>jar</packaging>
+
+  <properties>
+    <!-- ソースファイルの文字コード -->
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <!-- カスタム変数 -->
+    <jvmver>11</jvmver>
+    <jrever>jre11</jrever>
+    <!-- JAVAバージョン -->
+    <java.version>${jvmver}</java.version>
+    <!-- maven.compiler.release：JDK9から指定可 -->
+    <maven.compiler.release>${java.version}</maven.compiler.release>
+
+    <!-- バージョン管理プロパティ -->
+    <junit-jupiter.version>5.11.4</junit-jupiter.version>
+  </properties>
+
+  <!-- パッケージ化の設定 -->
+  <build>
+    <finalName>${project.artifactId}-${project.version}-${jrever}</finalName>
+    <plugins>
+      <!-- コンパイラ設定 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.14.0</version>
+        <configuration>
+          <release>${maven.compiler.release}</release>
+        </configuration>
+      </plugin>
+
+      <!-- テスト実行設定 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-surefire-plugin</artifactId>
+        <version>3.5.2</version>
+        <configuration>
+          <includes>
+            <include>**/*Test.java</include>
+            <include>**/Test*.java</include>
+          </includes>
+        </configuration>
+      </plugin>
+
+      <!-- マニフェスト設定 -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>3.4.2</version>
+        <configuration>
+          <archive>
+            <manifest>
+              <mainClass>${project.groupId}.${project.artifactId}</mainClass>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- 依存ライブラリ同梱化 (Uber JAR) -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-shade-plugin</artifactId>
+        <version>3.6.2</version>
+        <executions>
+          <execution>
+            <phase>package</phase>
+            <goals>
+              <goal>shade</goal>
+            </goals>
+            <configuration>
+              <createDependencyReducedPom>false</createDependencyReducedPom>
+              <transformers>
+                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                  <mainClass>${project.groupId}.${project.artifactId}</mainClass>
+                </transformer>
+              </transformers>
+              <filters>
+                <filter>
+                  <artifact>*:*</artifact>
+                  <excludes>
+                    <exclude>META-INF/*.SF</exclude>
+                    <exclude>META-INF/*.DSA</exclude>
+                    <exclude>META-INF/*.RSA</exclude>
+                  </excludes>
+                </filter>
+              </filters>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+
+  <!-- 依存ライブラリ -->
+  <dependencies>
+
+    <!-- 共通ライブラリ -->
+    <dependency>
+      <groupId>tool.cmnclslib</groupId>
+      <artifactId>CmnClsLib</artifactId>
+      <version>1.0</version>
+    </dependency>
+
+    <!-- 単体テスト (JUnit 5) -->
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <version>${junit-jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter-params</artifactId>
+      <version>${junit-jupiter.version}</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
+</project>
