@@ -99,65 +99,27 @@ PS D:\Github\workspace.jre11\FileCleaner> mvn dependency:tree
 Picked up JAVA_TOOL_OPTIONS: -Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8
 [INFO] Scanning for projects...
 [INFO]
-[INFO] ----------------------------< tool:FileCleaner >-----------------------------
+[INFO] --------------------------< tool:FileCleaner >--------------------------
 [INFO] Building FileCleaner 1.0
 [INFO]   from pom.xml
 [INFO] --------------------------------[ jar ]---------------------------------
 [INFO]
 [INFO] --- dependency:3.7.0:tree (default-cli) @ FileCleaner ---
 [INFO] tool:FileCleaner:jar:1.0
-[INFO] +- junit:junit:jar:4.13.2:test
-[INFO] |  \- org.hamcrest:hamcrest-core:jar:1.3:compile
-[INFO] +- io.cloudsoft.windows:winrm4j:jar:0.12.3:compile
-[INFO] |  \- io.cloudsoft.windows:winrm4j-client:jar:0.12.3:compile
-[INFO] |     +- commons-io:commons-io:jar:2.4:compile
-[INFO] |     \- org.xmlunit:xmlunit-matchers:jar:2.3.0:compile
-[INFO] |        \- org.xmlunit:xmlunit-core:jar:2.3.0:compile
-[INFO] +- org.apache.cxf:cxf-rt-frontend-jaxws:jar:3.6.4:compile
-[INFO] |  +- xml-resolver:xml-resolver:jar:1.2:compile
-[INFO] |  +- org.apache.cxf:cxf-core:jar:3.6.4:compile
-[INFO] |  |  +- jakarta.annotation:jakarta.annotation-api:jar:1.3.5:compile
-[INFO] |  |  +- com.fasterxml.woodstox:woodstox-core:jar:6.6.2:compile
-[INFO] |  |  |  \- org.codehaus.woodstox:stax2-api:jar:4.2.2:compile
-[INFO] |  |  \- org.apache.ws.xmlschema:xmlschema-core:jar:2.3.1:compile
-[INFO] |  +- org.apache.cxf:cxf-rt-bindings-soap:jar:3.6.4:compile
-[INFO] |  |  +- org.apache.cxf:cxf-rt-wsdl:jar:3.6.4:compile
-[INFO] |  |  |  \- wsdl4j:wsdl4j:jar:1.6.3:compile
-[INFO] |  |  \- org.apache.cxf:cxf-rt-databinding-jaxb:jar:3.6.4:compile
-[INFO] |  +- org.apache.cxf:cxf-rt-bindings-xml:jar:3.6.4:compile
-[INFO] |  +- org.apache.cxf:cxf-rt-frontend-simple:jar:3.6.4:compile
-[INFO] |  \- org.apache.cxf:cxf-rt-ws-addr:jar:3.6.4:compile
-[INFO] |     \- org.apache.cxf:cxf-rt-ws-policy:jar:3.6.4:compile
-[INFO] |        \- org.apache.neethi:neethi:jar:3.2.0:compile
-[INFO] +- org.apache.cxf:cxf-rt-transports-http-hc:jar:3.6.4:compile
-[INFO] |  +- org.apache.cxf:cxf-rt-transports-http:jar:3.6.4:compile
-[INFO] |  +- org.slf4j:slf4j-api:jar:1.7.36:compile
-[INFO] |  +- org.slf4j:jcl-over-slf4j:jar:1.7.36:compile
-[INFO] |  \- org.apache.httpcomponents:httpcore-nio:jar:4.4.16:compile
-[INFO] +- org.apache.httpcomponents:httpclient:jar:4.5.14:compile
-[INFO] |  +- org.apache.httpcomponents:httpcore:jar:4.4.16:compile
-[INFO] |  +- commons-logging:commons-logging:jar:1.2:compile
-[INFO] |  \- commons-codec:commons-codec:jar:1.11:compile
-[INFO] +- org.apache.httpcomponents:httpasyncclient:jar:4.1.5:compile
-[INFO] +- jakarta.xml.ws:jakarta.xml.ws-api:jar:2.3.3:compile
-[INFO] |  +- jakarta.xml.bind:jakarta.xml.bind-api:jar:2.3.3:compile
-[INFO] |  |  \- jakarta.activation:jakarta.activation-api:jar:1.2.2:compile
-[INFO] |  +- jakarta.xml.soap:jakarta.xml.soap-api:jar:1.4.2:compile
-[INFO] |  \- jakarta.jws:jakarta.jws-api:jar:2.1.0:compile
-[INFO] +- org.glassfish.jaxb:jaxb-runtime:jar:2.3.9:compile
-[INFO] |  +- org.glassfish.jaxb:txw2:jar:2.3.9:compile
-[INFO] |  +- com.sun.istack:istack-commons-runtime:jar:3.0.12:compile
-[INFO] |  \- com.sun.activation:jakarta.activation:jar:1.2.2:runtime
-[INFO] +- com.sun.xml.messaging.saaj:saaj-impl:jar:1.5.3:compile
-[INFO] |  \- org.jvnet.staxex:stax-ex:jar:1.8.3:compile
-[INFO] +- org.ow2.asm:asm:jar:9.10.1:compile
-[INFO] +- org.slf4j:slf4j-simple:jar:1.7.36:compile
-[INFO] \- tool.cmnclslib:CmnClsLib:jar:1.0:compile
+[INFO] +- tool.cmnclslib:CmnClsLib:jar:1.0:compile
+[INFO] +- org.junit.jupiter:junit-jupiter:jar:5.11.4:test
+[INFO] |  +- org.junit.jupiter:junit-jupiter-api:jar:5.11.4:test
+[INFO] |  |  +- org.opentest4j:opentest4j:jar:1.3.0:test
+[INFO] |  |  \- org.junit.platform:junit-platform-commons:jar:1.11.4:test
+[INFO] |  \- org.junit.jupiter:junit-jupiter-engine:jar:5.11.4:test
+[INFO] |     \- org.junit.platform:junit-platform-engine:jar:1.11.4:test
+[INFO] \- org.junit.jupiter:junit-jupiter-params:jar:5.11.4:test
+[INFO]    \- org.apiguardian:apiguardian-api:jar:1.1.2:test
 [INFO] ------------------------------------------------------------------------
 [INFO] BUILD SUCCESS
 [INFO] ------------------------------------------------------------------------
-[INFO] Total time:  1.335 s
-[INFO] Finished at: 2026-08-19T23:41:00+09:00
+[INFO] Total time:  1.311 s
+[INFO] Finished at: 2026-08-29T23:08:38+09:00
 [INFO] ------------------------------------------------------------------------
 PS D:\Github\workspace.jre11\FileCleaner>
 ```
@@ -166,7 +128,9 @@ PS D:\Github\workspace.jre11\FileCleaner>
 - pom.xml
 - src\main\java\tool\FileCleaner.java
 - src\main\java\tool\ClsAppArg.java
-- src\main\java\tool\ClsWinRs.java
+- src\main\java\tool\ClsBaseDir.java
+- src\main\java\tool\ClsCfgFile.java
+- src\main\java\tool\ClsFind.java
 
 ## AIレビュー
 ```shell
