@@ -141,4 +141,25 @@ public class ClsFindTest {
         assertTrue(result, "単一ファイル削除が成功すること");
         assertFalse(Files.exists(singleFile), "単一ファイルが削除されていること");
     }
+
+    @Test
+    @DisplayName("事前コマンド（DryRun）が設定されている場合に正常に評価されること")
+    void execute_PreRmCmdDryRun_ExecutesSuccessfully() throws IOException {
+        Path testFile = Files.createFile(tempDir.resolve("precmd_test.log"));
+        Files.writeString(testFile, "test data");
+
+        ClsBaseDir baseDir = new ClsBaseDir();
+        baseDir.setPath(tempDir.toString());
+        baseDir.setBaseDir(true);
+        baseDir.setExec(false); // DryRun
+        baseDir.setRmFile(true);
+        baseDir.setTerm(false);
+        baseDir.setPreRmCmd("echo {}");
+        baseDir.setPreRmCmd(true);
+
+        boolean result = clsFind.execute(baseDir);
+
+        assertTrue(result, "DryRun時の事前コマンド評価が成功すること");
+        assertTrue(Files.exists(testFile), "DryRunではファイルが削除されないこと");
+    }
 }

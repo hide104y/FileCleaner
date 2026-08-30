@@ -13,6 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import tool.cmnclslib.cls.ClsCmdExec;
 import tool.cmnclslib.cls.ClsLogger;
+import tool.cmnclslib.mdl.MdlApp;
 import tool.cmnclslib.mdl.MdlConst;
 import tool.cmnclslib.mdl.MdlDate;
 import tool.cmnclslib.mdl.MdlFile;
@@ -48,6 +49,53 @@ public class ClsFind {
         this.appArg = appArg;
         this.cmdExec = new ClsCmdExec(logger);
         this.baseDir = new ClsBaseDir();
+    }
+
+    /**
+     * 現在のOS環境に応じたデフォルトのコマンド実行シェルを取得します。
+     *
+     * @return デフォルトシェルのパスまたはコマンド名
+     */
+    private String getDefaultShell() {
+        if (MdlApp.isWindows()) {
+            String comSpec = System.getenv("ComSpec");
+            return (comSpec != null && !comSpec.isBlank()) ? comSpec : "cmd.exe";
+        } else {
+            String shell = System.getenv("SHELL");
+            return (shell != null && !shell.isBlank()) ? shell : "/bin/sh";
+        }
+    }
+
+    /**
+     * 実行モードおよびOS環境に応じたコマンド実行設定を行います。
+     *
+     * @param cmdArg コマンド引数文字列
+     */
+    private void setupCmdExec(String cmdArg) {
+        switch (baseDir.getExecModeCode()) {
+            case ClsBaseDir.EXEC_MODE_CMD:
+                if (MdlApp.isWindows()) {
+                    cmdExec.setCmdPath(getDefaultShell());
+                    cmdExec.setCmdArgs("/c " + cmdArg);
+                } else {
+                    cmdExec.setCmdPath(getDefaultShell());
+                    cmdExec.setCmdArgs("-c \"" + cmdArg.replace("\"", "\\\"") + "\"");
+                }
+                break;
+            case ClsBaseDir.EXEC_MODE_PS:
+                if (MdlApp.isWindows()) {
+                    cmdExec.setCmdPath("powershell");
+                    cmdExec.setCmdArgs("-NoProfile -command \"" + cmdArg + "; exit $LASTEXITCODE\"");
+                } else {
+                    cmdExec.setCmdPath("pwsh");
+                    cmdExec.setCmdArgs("-NoProfile -Command \"" + cmdArg + "; exit $LASTEXITCODE\"");
+                }
+                break;
+            default:
+                cmdExec.setCmdPath(MdlUtil.getRegexTarget(cmdArg, "^(?<TARGET>\\S+)\\s+.*"));
+                cmdExec.setCmdArgs(MdlUtil.getRegexTarget(cmdArg, "^\\S+\\s+(?<TARGET>.*)"));
+                break;
+        }
     }
 
     /**
@@ -94,7 +142,7 @@ public class ClsFind {
                 baseDir.setShowOutput(true);
                 baseDir.setShowExitCode(true);
             }
-            cmdExec.setCmdPath(System.getenv("ComSpec") != null ? System.getenv("ComSpec") : "cmd");
+            cmdExec.setCmdPath(getDefaultShell());
             cmdExec.setShowCmd(this.baseDir.isShowCmd());
             cmdExec.setShowExitCode(this.baseDir.isShowExitCode());
             cmdExec.setShowOutput(this.baseDir.isShowOutput());
@@ -600,20 +648,7 @@ public class ClsFind {
                     // コマンド実行が指定された場合
                     if (baseDir.isPreRmCmd()) {
                         String cmdArg = MdlFile.replacePathForCmd(baseDir.getPreRmCmd(), targetPath, baseDir.getPath(), relativePath, baseDir.isDq(), baseDir.getVerbose(), timestamp);
-                        switch (baseDir.getExecModeCode()) {
-                            case ClsBaseDir.EXEC_MODE_CMD:
-                                cmdExec.setCmdPath(System.getenv("ComSpec") != null ? System.getenv("ComSpec") : "cmd");
-                                cmdExec.setCmdArgs("/c " + cmdArg);
-                                break;
-                            case ClsBaseDir.EXEC_MODE_PS:
-                                cmdExec.setCmdPath("powershell");
-                                cmdExec.setCmdArgs("-NoProfile -command \"" + cmdArg + "; exit $LASTEXITCODE\"");
-                                break;
-                            default:
-                                cmdExec.setCmdPath(MdlUtil.getRegexTarget(cmdArg, "^(?<TARGET>\\S+)\\s+.*"));
-                                cmdExec.setCmdArgs(MdlUtil.getRegexTarget(cmdArg, "^\\S+\\s+(?<TARGET>.*)"));
-                                break;
-                        }
+                        setupCmdExec(cmdArg);
                         if (baseDir.getVerbose() >= 0) {
                             message = "[" + titleEn + "][" + targetTypeLabel + "][" + MdlDate.getFormattedDate(targetUpdateDateTime, "yyyy/MM/dd HH:mm:ss") + "] " + cmdArg;
                         }
@@ -720,20 +755,7 @@ public class ClsFind {
                     if (baseDir.isPreRmCmd()) {
                         if (baseDir.getVerbose() >= 0) {
                             String cmdArg = MdlFile.replacePathForCmd(baseDir.getPreRmCmd(), targetPath, baseDir.getPath(), relativePath, baseDir.isDq(), baseDir.getVerbose());
-                            switch (baseDir.getExecModeCode()) {
-                                case ClsBaseDir.EXEC_MODE_CMD:
-                                    cmdExec.setCmdPath(System.getenv("ComSpec") != null ? System.getenv("ComSpec") : "cmd");
-                                    cmdExec.setCmdArgs("/c " + cmdArg);
-                                    break;
-                                case ClsBaseDir.EXEC_MODE_PS:
-                                    cmdExec.setCmdPath("powershell");
-                                    cmdExec.setCmdArgs("-NoProfile -command \"" + cmdArg + "; exit $LASTEXITCODE\"");
-                                    break;
-                                default:
-                                    cmdExec.setCmdPath(MdlUtil.getRegexTarget(cmdArg, "^(?<TARGET>\\S+)\\s+.*"));
-                                    cmdExec.setCmdArgs(MdlUtil.getRegexTarget(cmdArg, "^\\S+\\s+(?<TARGET>.*)"));
-                                    break;
-                            }
+                            setupCmdExec(cmdArg);
                             message = "[" + titleEn + "][" + targetTypeLabel + "][" + MdlDate.getFormattedDate(targetUpdateDateTime, "yyyy/MM/dd HH:mm:ss") + "] " + cmdExec.getCmdPath() + " " + cmdExec.getCmdArgs();
                         }
                     }

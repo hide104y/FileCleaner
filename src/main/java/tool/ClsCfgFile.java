@@ -43,14 +43,20 @@ public class ClsCfgFile {
     public ClsCfgFile(ClsLogger logger) {
         this.logger = logger;
         String host = System.getenv("COMPUTERNAME");
-        if (host == null || host.isEmpty()) {
+        if (host == null || host.isBlank()) {
+            host = System.getenv("HOSTNAME");
+        }
+        if (host == null || host.isBlank()) {
+            host = System.getenv("HOST");
+        }
+        if (host == null || host.isBlank()) {
             try {
                 host = java.net.InetAddress.getLocalHost().getHostName();
             } catch (Exception e) {
                 host = "";
             }
         }
-        this.machineName = (host != null && !host.isEmpty()) ? host.toUpperCase(Locale.ROOT) : "";
+        this.machineName = (host != null && !host.isBlank()) ? host.toUpperCase(Locale.ROOT) : "";
     }
 
     /**
@@ -341,7 +347,7 @@ public class ClsCfgFile {
             stringValue = MdlFile.removeTrailingPathSeparator(MdlFile.getAbsolutePath(stringValue));
             baseDir.setPath(stringValue);
             if (MdlFile.getDirectoryPath(baseDir.getPath()).isEmpty()) {
-                baseDir.setPath(baseDir.getPath() + "\\.");
+                baseDir.setPath(baseDir.getPath() + File.separator + ".");
             }
             switch (MdlFile.getPathType(stringValue)) {
                 case MdlFile.PATH_IS_DIRECTORY:
@@ -408,8 +414,7 @@ public class ClsCfgFile {
             if (lineParts.length > columnIndex) {
                 stringValue = lineParts[columnIndex].trim();
                 if (!stringValue.isEmpty()) {
-                    listStr = baseDir.getIncDirsList();
-                    if (!parseCsvToList(stringValue)) {
+                    if (!parseCsvToList(stringValue, baseDir.getIncDirsList())) {
                         if (logger != null) {
                             logger.writeLine(MdlConst.LVL_E, methodName + "[LINE:" + formattedLineNumber + "][COL:08:INC DIR] SYNTAX ERROR : " + stringValue);
                         }
@@ -423,8 +428,7 @@ public class ClsCfgFile {
             if (lineParts.length > columnIndex) {
                 stringValue = lineParts[columnIndex].trim();
                 if (!stringValue.isEmpty()) {
-                    listStr = baseDir.getIncFilesList();
-                    if (!parseCsvToList(stringValue)) {
+                    if (!parseCsvToList(stringValue, baseDir.getIncFilesList())) {
                         if (logger != null) {
                             logger.writeLine(MdlConst.LVL_E, methodName + "[LINE:" + formattedLineNumber + "][COL:09:INC FILE] SYNTAX ERROR : " + stringValue);
                         }
@@ -438,8 +442,7 @@ public class ClsCfgFile {
             if (lineParts.length > columnIndex) {
                 stringValue = lineParts[columnIndex].trim();
                 if (!stringValue.isEmpty()) {
-                    listStr = baseDir.getExcDirsList();
-                    if (!parseCsvToList(stringValue)) {
+                    if (!parseCsvToList(stringValue, baseDir.getExcDirsList())) {
                         if (logger != null) {
                             logger.writeLine(MdlConst.LVL_E, methodName + "[LINE:" + formattedLineNumber + "][COL:10:EXC DIR] SYNTAX ERROR : " + stringValue);
                         }
@@ -453,8 +456,7 @@ public class ClsCfgFile {
             if (lineParts.length > columnIndex) {
                 stringValue = lineParts[columnIndex].trim();
                 if (!stringValue.isEmpty()) {
-                    listStr = baseDir.getExcFilesList();
-                    if (!parseCsvToList(stringValue)) {
+                    if (!parseCsvToList(stringValue, baseDir.getExcFilesList())) {
                         if (logger != null) {
                             logger.writeLine(MdlConst.LVL_E, methodName + "[LINE:" + formattedLineNumber + "][COL:11:EXC FILE] SYNTAX ERROR : " + stringValue);
                         }
@@ -524,8 +526,22 @@ public class ClsCfgFile {
      * @return 処理が正常に完了した場合は {@code true}、失敗した場合は {@code false}
      */
     public boolean parseCsvToList(String csvString) {
+        return parseCsvToList(csvString, this.listStr);
+    }
+
+    /**
+     * CSV形式の文字列を解析し、指定されたリストに格納します。
+     *
+     * @param csvString CSV形式の文字列
+     * @param targetList 格納先の文字列リスト
+     * @return 処理が正常に完了した場合は {@code true}、失敗した場合は {@code false}
+     */
+    public boolean parseCsvToList(String csvString, List<String> targetList) {
         if (csvString == null || csvString.isEmpty()) {
             return true;
+        }
+        if (targetList == null) {
+            return false;
         }
 
         final String methodName = "[ClsCfgFile.parseCsvToList()]";
@@ -534,7 +550,7 @@ public class ClsCfgFile {
         for (String element : csvArray) {
             String tempString = element.startsWith("*") ? "." + element : element;
             try {
-                listStr.add(tempString);
+                targetList.add(tempString);
             } catch (Exception e) {
                 if (logger != null) {
                     logger.writeLine(MdlConst.LVL_W, methodName + " SYNTAX ERROR : " + csvString);

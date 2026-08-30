@@ -9,6 +9,7 @@ import java.util.Locale;
 import java.util.Map;
 import tool.cmnclslib.cls.ClsCmmnArgs;
 import tool.cmnclslib.cls.ClsLogger;
+import tool.cmnclslib.mdl.MdlApp;
 import tool.cmnclslib.mdl.MdlArg;
 import tool.cmnclslib.mdl.MdlConst;
 import tool.cmnclslib.mdl.MdlDate;
@@ -30,7 +31,6 @@ public class ClsAppArg {
     private ClsBaseDir baseDir = new ClsBaseDir();
     private String exeDir = "";
     private String exeBaseName = "";
-    private long pid = 0;
     private int verbose = 0;
     private int returnCode = MdlConst.LVL_I;
     private int usageFlag = 0;
@@ -62,7 +62,6 @@ public class ClsAppArg {
         this.cmmnArgs.getModuleInfo();
         this.exeDir = this.cmmnArgs.getExeDir();
         this.exeBaseName = this.cmmnArgs.getExeBaseName();
-        this.pid = this.cmmnArgs.getPid();
 
         this.configFile = new ClsCfgFile(logger);
         this.configFile.setTargetList(this.targetList);
@@ -230,7 +229,7 @@ public class ClsAppArg {
                         baseDir.setPath(stringValue);
 
                         if (MdlFile.getDirectoryPath(baseDir.getPath()).isEmpty()) {
-                            baseDir.setPath(baseDir.getPath() + "\\.");
+                            baseDir.setPath(baseDir.getPath() + File.separator + ".");
                         }
                         switch (MdlFile.getPathType(stringValue)) {
                             case MdlFile.PATH_IS_DIRECTORY:
@@ -582,8 +581,9 @@ public class ClsAppArg {
      */
     public void usage() {
         String label = (isExample ? "例" : "現在値");
+        String exeExt = MdlApp.isWindows() ? ".exe" : "";
         logger.writeLine(MdlConst.LVL_NONE, "");
-        logger.writeLine(MdlConst.LVL_NONE, "Usage : " + exeDir + File.separator + exeBaseName + ".exe [Option] [Option]...");
+        logger.writeLine(MdlConst.LVL_NONE, "Usage : " + exeDir + File.separator + exeBaseName + exeExt + " [Option] [Option]...");
         logger.writeLine(MdlConst.LVL_NONE, "");
         logger.writeLine(MdlConst.LVL_NONE, "■Execution Option：");
         logger.writeLine(MdlConst.LVL_NONE, "   -clean|-exec   ：対象一覧の削除                          （" + label + "=" + (isExample ? "true" : !isList) + "）");

@@ -117,4 +117,26 @@ public class ClsAppArgTest {
 
         assertDoesNotThrow(sut::showSampleConfig);
     }
+
+    @Test
+    public void parse_RelativePath_AppendsSeparatorAndDot() {
+        ClsLogger logger = createLogger();
+        ClsAppArg sut = new ClsAppArg(logger);
+        String tempDir = new File(new File(System.getProperty("java.io.tmpdir")), "test_rel_dir").getPath();
+        new File(tempDir).mkdirs();
+
+        try {
+            String[] args = new String[]{"-path", tempDir, "-list"};
+            boolean result = sut.parse(args);
+
+            assertTrue(result);
+            assertEquals(1, sut.getTargetList().size());
+            assertNotNull(sut.getTargetList().get(0).getPath());
+        } finally {
+            File dir = new File(tempDir);
+            if (dir.exists()) {
+                MdlFile.deleteRecursively(tempDir);
+            }
+        }
+    }
 }

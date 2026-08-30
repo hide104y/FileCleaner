@@ -117,4 +117,40 @@ public class ClsCfgFileTest {
         assertTrue(result);
         assertEquals(2, cfgFile.getTargetList().size());
     }
+
+    @Test
+    public void parseCsvToList_WithTargetList_AddsDirectlyToSpecifiedList() {
+        ClsCfgFile cfgFile = new ClsCfgFile(logger);
+        java.util.List<String> targetList = new java.util.ArrayList<>();
+        boolean result = cfgFile.parseCsvToList("*.log,data_*.csv", targetList);
+
+        assertTrue(result);
+        assertEquals(2, targetList.size());
+        assertTrue(targetList.contains(".*.log"));
+        assertTrue(targetList.contains("data_*.csv"));
+    }
+
+    @Test
+    public void parseCsvToList_NullTargetList_ReturnsFalse() {
+        ClsCfgFile cfgFile = new ClsCfgFile(logger);
+        boolean result = cfgFile.parseCsvToList("*.log", null);
+
+        assertFalse(result);
+    }
+
+    @Test
+    public void parseCsvToList_EmptyString_ReturnsTrue() {
+        ClsCfgFile cfgFile = new ClsCfgFile(logger);
+        java.util.List<String> targetList = new java.util.ArrayList<>();
+        boolean result = cfgFile.parseCsvToList("", targetList);
+
+        assertTrue(result);
+        assertTrue(targetList.isEmpty());
+    }
+
+    @Test
+    public void getMachineName_IsNotNull() {
+        ClsCfgFile cfgFile = new ClsCfgFile(logger);
+        assertNotNull(cfgFile.getMachineName());
+    }
 }
